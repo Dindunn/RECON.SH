@@ -1,2 +1,17 @@
-# Google App Engine generated folder
+# Ignore all scan results and target data dumps
+results/
+output/
+scans/
+
+# Ignore specific output extensions if generated outside results
+*.log
+*.tmp
+
+# Ignore environment files and local configuration files (where API keys live)
+.env
+config/local_tokens.conf
+*.local
+
+# Ignore system files
+.DS_Store# Google App Engine generated folder
 appengine-generated/
