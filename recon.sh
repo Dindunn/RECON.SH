@@ -64,3 +64,18 @@ fi
 
 echo -e "${BLUE}[*] Pipeline complete. Happy hunting! Check your output files in $OUTPUT_DIR/${NC}
 
+# 5. High-Value Endpoint & Parameter Filtering
+if [ -s "$OUTPUT_DIR/wayback_urls.txt" ]; then
+    echo -e "${GREEN}[+] Filtering Wayback data for high-value targets...${NC}"
+    
+    # Extract URLs with parameters (potential XSS/SQLi/SSRF entry points)
+    grep -E '\?.*\=' "$OUTPUT_DIR/wayback_urls.txt" | sort -u > "$OUTPUT_DIR/param_endpoints.txt"
+    
+    # Extract interesting extensions (Configuration files, JSON data, JS files)
+    grep -E '\.(json|js|bak|conf|config|xml|sql|xls|xlsx)$' "$OUTPUT_DIR/wayback_urls.txt" | sort -u > "$OUTPUT_DIR/interesting_extensions.txt"
+    
+    echo -e "${GREEN}[✔] Isolated $(wc -l < "$OUTPUT_DIR/param_endpoints.txt") URLs with active parameters.${NC}"
+    echo -e "${GREEN}[✔] Isolated $(wc -l < "$OUTPUT_DIR/interesting_extensions.txt") files with sensitive extensions.${NC}\n"
+else
+    echo -e "${RED}[!] No historical URLs found to filter.${NC}"
+fi
